@@ -6,6 +6,8 @@ frontend:
         - npm install
     build:
       commands:
+        # シークレット(OPENAI_API_KEY)を実行環境に引き継ぐ設定
+        - echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
