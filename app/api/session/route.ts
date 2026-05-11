@@ -4,8 +4,8 @@ const ALLOWED_VOICES = ["alloy", "ash", "coral", "echo", "sage", "shimmer"] as c
 type Voice = (typeof ALLOWED_VOICES)[number];
 
 export async function POST(req: Request) {
-  const apiKey = process.env.OPENAI_API_KEY;
-  if (!apiKey) return NextResponse.json({ error: "OPENAI_API_KEY not set" }, { status: 500 });
+  const apiKey = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
+  if (!apiKey) return NextResponse.json({ error: "NEXT_PUBLIC_OPENAI_API_KEY not set" }, { status: 500 });
 
   let voice: Voice = "coral";
   try {
