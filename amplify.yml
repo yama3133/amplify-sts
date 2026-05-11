@@ -6,8 +6,7 @@ frontend:
         - npm ci
     build:
       commands:
-        # ビルド環境にある OPENAI_API_KEY を実行環境用のファイルに書き出す
-        - echo "OPENAI_API_KEY=$OPENAI_API_KEY" >> .env.production
+        - echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
