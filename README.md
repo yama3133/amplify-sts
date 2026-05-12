@@ -31,13 +31,13 @@ OpenAI Realtime API（api.openai.com）
     ▼
 ブラウザ Audio Context（再生 / 波形ビジュアライザー）
 
-ホスティング: AWS Amplify（CloudFront + S3）
+ホスティング: AWS Amplify（CloudFront + S3 + SSR Lambda）
 ```
 
 **ポイント:**
 - 音声はブラウザが OpenAI と **WebRTC で直接接続**するため低遅延
-- Amplify はフロントのホスティングと `/api/session` の実行のみを担う
 - `OPENAI_API_KEY` はサーバーサイドのみで使用し、ブラウザには **有効期限60秒の Ephemeral Token** だけを渡す
+- 文字起こしは `language: "ja"` を明示することで日本語認識精度を向上
 
 ---
 
@@ -45,7 +45,7 @@ OpenAI Realtime API（api.openai.com）
 
 - 🎙️ リアルタイム音声会話（Speech-to-Speech）
 - 🔊 6種類の話者を選択（Alloy / Ash / Coral / Echo / Sage / Shimmer）
-- 📝 会話トランスクリプトのリアルタイム表示
+- 📝 会話トランスクリプトのリアルタイム表示（日本語対応）
 - 🌊 音声波形ビジュアライザー
 - 🌐 日本語・英語など話した言語で自動応答
 - ⚡ 割り込み検知（VAD）対応
@@ -86,7 +86,7 @@ git clone https://github.com/yama3133/amplify-sts.git
 cd amplify-sts
 
 # 2. 依存インストール
-npm install --legacy-peer-deps
+npm install
 
 # 3. 環境変数を設定
 echo 'OPENAI_API_KEY=sk-...' > .env.local
@@ -120,17 +120,17 @@ git push -u origin main
 
 ### Step 3: 環境変数を設定
 
-Amplify コンソール → **「アプリケーションの設定」** → **「環境変数」**
+Amplify コンソール → **「ホスティング」** → **「環境変数」**
 
 | 変数名 | 値 |
 |---|---|
 | `OPENAI_API_KEY` | `sk-...` |
 
-設定後 **「再デプロイ」** を実行。
+設定後 **「保存」** を押す。
 
-### Step 4: ビルド設定の確認
+### Step 4: ビルド設定を確認・修正
 
-**「ホスティング」** → **「ビルドの設定」** で以下になっていることを確認：
+**「ホスティング」** → **「ビルドの設定」** → **「編集」** で以下に書き換えて保存：
 
 ```yaml
 version: 1
@@ -141,6 +141,7 @@ frontend:
         - npm install
     build:
       commands:
+        - cp .env.production .next/standalone/.env.production 2>/dev/null || true
         - npm run build
   artifacts:
     baseDirectory: .next
@@ -151,6 +152,12 @@ frontend:
       - node_modules/**/*
       - .next/cache/**/*
 ```
+
+### Step 5: 再デプロイ
+
+設定後、**「再デプロイ」** を実行。
+
+> **注意:** AmplifyのSSRランタイム（Lambda）に環境変数を渡すには、`amplify.yml` のビルドフェーズで `.env.production` を生成する方法が確実です。
 
 ---
 
@@ -182,7 +189,8 @@ frontend:
 | フロントエンド | Next.js 15 (App Router) |
 | 音声通信 | WebRTC + RTCDataChannel |
 | AI音声 | OpenAI Realtime API (`gpt-4o-realtime-preview`) |
-| ホスティング | AWS Amplify (CloudFront + S3) |
+| 文字起こし | Whisper (`whisper-1`, `language: "ja"`) |
+| ホスティング | AWS Amplify (CloudFront + S3 + SSR Lambda) |
 | 言語 | TypeScript |
 
 ---
@@ -192,3 +200,4 @@ frontend:
 - マイクアクセスには `https://` または `localhost` 環境が必要です
 - OpenAI Realtime API は通常の Chat API より高価です。使用後は必ず **STOP** ボタンを押してセッションを終了してください
 - Ephemeral Token の有効期限は60秒です（接続確立後はセッションが継続するため問題ありません）
+- AmplifyのSSRランタイムへの環境変数の受け渡しには注意が必要です（詳細はStep 4参照）
