@@ -3,8 +3,14 @@ import { NextResponse } from "next/server";
 const ALLOWED_VOICES = ["alloy", "ash", "coral", "echo", "sage", "shimmer"] as const;
 type Voice = (typeof ALLOWED_VOICES)[number];
 
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 export async function POST(req: Request) {
   const apiKey = process.env.OPENAI_API_KEY;
+
+  console.log("OPENAI_API_KEY exists:", !!apiKey);
+
   if (!apiKey) return NextResponse.json({ error: "OPENAI_API_KEY not set" }, { status: 500 });
 
   let voice: Voice = "coral";
