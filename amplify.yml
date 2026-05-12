@@ -6,7 +6,7 @@ frontend:
         - npm install
     build:
       commands:
-        - echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env.local
+        - env | grep -i openai || echo "NO OPENAI VAR FOUND"
         - npm run build
   artifacts:
     baseDirectory: .next
