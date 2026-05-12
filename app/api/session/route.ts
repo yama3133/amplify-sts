@@ -6,10 +6,14 @@ type Voice = (typeof ALLOWED_VOICES)[number];
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  const apiKey = process.env.OPENAI_API_KEY || "";
+  // Amplify SSR環境ではprocess.envから直接読む
+  const apiKey = process.env["OPENAI_API_KEY"];
 
-  if (!apiKey || apiKey === "undefined") {
-    return NextResponse.json({ error: "OPENAI_API_KEY not set" }, { status: 500 });
+  if (!apiKey) {
+    return NextResponse.json(
+      { error: "OPENAI_API_KEY not set", env: Object.keys(process.env).filter(k => k.includes("OPENAI")) },
+      { status: 500 }
+    );
   }
 
   let voice: Voice = "coral";
