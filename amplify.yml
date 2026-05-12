@@ -3,11 +3,10 @@ frontend:
   phases:
     preBuild:
       commands:
-        - npm ci
+        - npm install
     build:
       commands:
-        # シークレット管理にある OPENAI_API_KEY を安全にファイルへ書き出す
-        - echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env.production
+        - echo "OPENAI_API_KEY=$OPENAI_API_KEY" > .env.production
         - npm run build
   artifacts:
     baseDirectory: .next
