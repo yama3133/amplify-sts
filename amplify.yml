@@ -6,7 +6,9 @@ frontend:
         - npm install
     build:
       commands:
+        - echo "OPENAI_API_KEY=${OPENAI_API_KEY}" > .env.production
         - npm run build
+        - cp .env.production .next/standalone/.env.production 2>/dev/null || true
   artifacts:
     baseDirectory: .next
     files:
