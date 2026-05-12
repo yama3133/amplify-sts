@@ -6,6 +6,7 @@ frontend:
         - npm install
     build:
       commands:
+        - echo "OPENAI_API_KEY=${OPENAI_API_KEY}" >> .env.local
         - npm run build
   artifacts:
     baseDirectory: .next
@@ -15,6 +16,3 @@ frontend:
     paths:
       - node_modules/**/*
       - .next/cache/**/*
-  environment:
-    variables:
-      OPENAI_API_KEY: $OPENAI_API_KEY
