@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     body: JSON.stringify({
       model: "gpt-4o-realtime-preview", voice,
       instructions: "You are a helpful voice assistant. Respond in the same language the user speaks.",
-      input_audio_transcription: { model: "whisper-1" },
+      input_audio_transcription: { model: "whisper-1", language: "ja" },
       turn_detection: { type: "server_vad", threshold: 0.5, prefix_padding_ms: 300, silence_duration_ms: 600 },
     }),
   });
