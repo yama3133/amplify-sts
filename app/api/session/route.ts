@@ -26,7 +26,7 @@ export async function POST(req: Request) {
     method: "POST",
     headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "gpt-4o-realtime", voice,
+      model: "gpt-realtime-2025-08-28", voice,
       instructions: "You are a helpful voice assistant. Respond in the same language the user speaks.",
       input_audio_transcription: { model: "whisper-1" },
       turn_detection: { type: "server_vad", threshold: 0.5, prefix_padding_ms: 300, silence_duration_ms: 600 },
